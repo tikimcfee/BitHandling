@@ -21,16 +21,16 @@ open class LockingCache<Key: Hashable, Value>: CacheBuilder {
         fatalError("LockingCache subscript defaults to `make()`; implement this in [\(type(of: self))].")
     }
 
-    subscript(key: Key) -> Value {
+    public subscript(key: Key) -> Value {
         get { lockAndMake(key: key) }
 		set { lockAndSet(key: key, value: newValue) }
     }
     
-    func isEmpty() -> Bool {
+    public func isEmpty() -> Bool {
         cache.isEmpty
     }
         
-    func doOnEach(_ action: (Key, Value) -> Void) {
+    public func doOnEach(_ action: (Key, Value) -> Void) {
         var keys = cache.keys.makeIterator()
         var values = cache.values.makeIterator()
         while let key = keys.next(),
@@ -39,7 +39,7 @@ open class LockingCache<Key: Hashable, Value>: CacheBuilder {
         }
     }
     
-    func doOnEachThrowing(_ action: (Key, Value) throws -> Void) rethrows {
+    public func doOnEachThrowing(_ action: (Key, Value) throws -> Void) rethrows {
         var keys = cache.keys.makeIterator()
         var values = cache.values.makeIterator()
         while let key = keys.next(),
