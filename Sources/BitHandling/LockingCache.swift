@@ -12,6 +12,10 @@ public protocol CacheBuilder {
 open class LockingCache<Key: Hashable, Value>: CacheBuilder {
     
     private var cache = ConcurrentDictionary<Key, Value>()
+    
+    public init() {
+        /* Maybe accept a cache instance.. or just use an Actor <3 */
+    }
 
     open func make(_ key: Key, _ store: inout [Key: Value]) -> Value {
         fatalError("LockingCache subscript defaults to `make()`; implement this in [\(type(of: self))].")
