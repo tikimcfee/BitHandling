@@ -3,7 +3,7 @@ import Foundation
 // Returns reads immediately, and if no value exists, locks dictionary write
 // and creates a new object from the given builder. Passed map to allow additional
 // modifications during critical section
-protocol CacheBuilder {
+public protocol CacheBuilder {
     associatedtype Key: Hashable
     associatedtype Value
     func make(_ key: Key, _ store: inout [Key: Value]) -> Value
