@@ -8,8 +8,12 @@
 
 import Foundation
 
-final class LockWrapper {
+public final class LockWrapper {
     private var lock = UnfairLock()
+    
+    public init() {
+        
+    }
 
     // MARK: Public
     public func writeLock() {
@@ -25,7 +29,11 @@ final class LockWrapper {
     }
 }
 
-final class UnfairLock: NSLocking {
+public final class UnfairLock: NSLocking {
+    public init() {
+        
+    }
+    
     private let unfairLock: UnsafeMutablePointer<os_unfair_lock_s> = {
         let pointer = UnsafeMutablePointer<os_unfair_lock_s>.allocate(capacity: 1)
         pointer.initialize(to: os_unfair_lock_s())
@@ -37,20 +45,20 @@ final class UnfairLock: NSLocking {
         unfairLock.deallocate()
     }
     
-    func lock() {
+    public func lock() {
         os_unfair_lock_lock(unfairLock)
     }
     
-    func tryLock() -> Bool {
+    public func tryLock() -> Bool {
         os_unfair_lock_trylock(unfairLock)
     }
     
-    func unlock() {
+    public func unlock() {
         os_unfair_lock_unlock(unfairLock)
     }
 }
 
-extension UnfairLock {
+public extension UnfairLock {
     func withAcquiredLock(_ action: () -> Void) {
         lock()
         action()
