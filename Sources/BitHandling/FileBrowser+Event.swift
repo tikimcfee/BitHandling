@@ -7,9 +7,9 @@
 
 import Foundation
 
-extension FileBrowser {
+public extension FileBrowser {
     enum Event {
-        enum SelectType {
+        public enum SelectType {
             case addToFocus
             case addToWorld
             case focusOnExistingGrid

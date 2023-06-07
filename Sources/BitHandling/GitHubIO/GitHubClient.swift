@@ -7,8 +7,8 @@
 
 import Foundation
 
-class GitHubClient {
-    static let shared = GitHubClient()
+public class GitHubClient {
+    public static let shared = GitHubClient()
     
     static let basePath = "https://api.github.com/"
     static let baseURL = URL(string: basePath)!
@@ -16,37 +16,48 @@ class GitHubClient {
     private init() { }
 }
 
-extension GitHubClient {
+public extension GitHubClient {
     enum ClientError: Swift.Error {
         case missingResultURL
     }
     
     struct RepositoryZipArgs {
-        let owner: String
-        let repo: String
-        let branchRef: String
+        public let owner: String
+        public let repo: String
+        public let branchRef: String
         
-        let unzippedResultTargetUrl: URL
+        public let unzippedResultTargetUrl: URL
+        
+        public init(
+            owner: String,
+            repo: String,
+            branchRef: String,
+            unzippedResultTargetUrl: URL
+        ) {
+            self.owner = owner
+            self.repo = repo
+            self.branchRef = branchRef
+            self.unzippedResultTargetUrl = unzippedResultTargetUrl
+        }
     }
     
     enum Endpoint {
         case repositoryZip(RepositoryZipArgs, (Result<URL, Error>) -> Void)
         
-        var apiPath: String {
+        public var apiPath: String {
             switch self {
             case let .repositoryZip(args, _):
                 return "repos/\(args.owner)/\(args.repo)/zipball/\(args.branchRef)"
             }
         }
         
-        var apiUrl: URL {
+        public var apiUrl: URL {
             GitHubClient.baseURL.appendingPathComponent(apiPath)
         }
     }
 }
 
-extension GitHubClient {
-
+public extension GitHubClient {
     private func fetch(endpoint: Endpoint) {
         switch endpoint {
         case let .repositoryZip(repositoryZipArgs, receiver):

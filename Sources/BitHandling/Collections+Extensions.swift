@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Set {
+public extension Set {
     enum Selection {
         case addedToSet, removedFromSet
     }

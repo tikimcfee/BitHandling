@@ -8,13 +8,13 @@
 import Foundation
 
 public class AppendingStore {
-    let targetFile: URL
+    public let targetFile: URL
     
-    init(targetFile: URL) {
+    public init(targetFile: URL) {
         self.targetFile = targetFile
     }
     
-    func cleanFile() {
+    public func cleanFile() {
         do {
             try FileManager.default.removeItem(at: targetFile)
             AppFiles.touch(in: targetFile)
@@ -23,7 +23,7 @@ public class AppendingStore {
         }
     }
     
-    func removeFile() {
+    public func removeFile() {
         do {
             try FileManager.default.removeItem(at: targetFile)
         } catch {
@@ -31,7 +31,7 @@ public class AppendingStore {
         }
     }
     
-    func appendText(_ text: String, encoded encoding: String.Encoding = .utf8) {
+    public func appendText(_ text: String, encoded encoding: String.Encoding = .utf8) {
         if let data = text.data(using: encoding) {
             do {
                 try appendToFile(data)

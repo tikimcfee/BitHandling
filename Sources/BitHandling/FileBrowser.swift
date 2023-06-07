@@ -8,12 +8,16 @@
 import Foundation
 import Combine
 
-class FileBrowser: ObservableObject {
-    @Published var scopes: [Scope] = []
-    @Published var fileSelectionEvents: FileBrowser.Event = .noSelection
+public class FileBrowser: ObservableObject {
+    @Published public var scopes: [Scope] = []
+    @Published public var fileSelectionEvents: FileBrowser.Event = .noSelection
+    
+    public init() {
+        
+    }
 }
 
-extension FileBrowser {
+public extension FileBrowser {
     static let supportedTextExtensions: Set<String> = [
         "swift", "metal",
         "m", "mm",
@@ -71,7 +75,7 @@ extension FileBrowser {
     }
 }
 
-extension URL {
+public extension URL {
     // This is gross, but the scope must remain open for the duration of usage
     // since we actively read from arbitrary paths in the tree. Track to at least
     // have a record and descope if needed.
@@ -140,7 +144,7 @@ extension URL {
     }
 }
 
-extension URL {
+public extension URL {
     private static let _fileManager = FileManager.default
     private var fileManager: FileManager { Self._fileManager }
     

@@ -9,21 +9,21 @@ import Foundation
 
 extension FileBrowser.Scope: Codable { }
 
-extension FileBrowser {
+public extension FileBrowser {
     enum Scope: Equatable, CustomStringConvertible, Identifiable {
         case file(URL)
         case directory(URL)
         case expandedDirectory(URL)
         
-        var id: String { description }
+        public var id: String { description }
         
-        static func from(_ path: URL) -> Scope {
+        public static func from(_ path: URL) -> Scope {
             return path.isDirectory
             ? .directory(path)
             : .file(path)
         }
         
-        func typeCompare(_ l: Scope, _ r: Scope) -> Bool {
+        public func typeCompare(_ l: Scope, _ r: Scope) -> Bool {
             switch (l, r) {
             case (.directory, .file),
                 (.expandedDirectory, .file):
@@ -33,7 +33,7 @@ extension FileBrowser {
             }
         }
         
-        func nameCompare(_ l: Scope, _ r: Scope) -> Bool {
+        public func nameCompare(_ l: Scope, _ r: Scope) -> Bool {
             switch (l, r) {
             case let (.file(lPath), .file(rPath)),
                 let (.directory(lPath), .directory(rPath)),
@@ -44,7 +44,7 @@ extension FileBrowser {
             }
         }
         
-        var path: URL {
+        public var path: URL {
             switch self {
             case let .file(path):
                 return path
@@ -55,7 +55,7 @@ extension FileBrowser {
             }
         }
         
-        var description: String {
+        public var description: String {
             switch self {
             case let .file(path):
                 return path.path
@@ -79,7 +79,7 @@ private extension AppStatePreferences {
     }
 }
 
-extension FileBrowser {
+public extension FileBrowser {
     var rootScope: Scope? {
         return scopes.first
     }

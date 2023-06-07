@@ -5,13 +5,13 @@ import AppKit
 #endif
 
 
-typealias FileResult = Result<URL, FileError>
-typealias FileReceiver = (FileResult) -> Void
+public typealias FileResult = Result<URL, FileError>
+public typealias FileReceiver = (FileResult) -> Void
 
-typealias DirectoryResult = Result<Directory, FileError>
-typealias DirectoryReceiver = (DirectoryResult) -> Void
+public typealias DirectoryResult = Result<Directory, FileError>
+public typealias DirectoryReceiver = (DirectoryResult) -> Void
 
-extension DirectoryResult {
+public extension DirectoryResult {
     var parent: URL? {
         if case let .success(url) = self { return url.parent }
         return nil
@@ -22,17 +22,17 @@ extension DirectoryResult {
     }
 }
 
-struct Directory {
+public struct Directory {
     let parent: URL
     let swiftUrls: [URL]
 }
 
-enum FileError: Error {
+public enum FileError: Error {
     case generic
     case noSwiftSource
 }
 
-func showInFinder(url: URL?) {
+public func showInFinder(url: URL?) {
     switch url {
 #if os(OSX)
     case let .some(url) where url.isDirectory:
@@ -47,7 +47,7 @@ func showInFinder(url: URL?) {
 
 #if os(OSX)
 
-func openFile(_ receiver: @escaping FileReceiver) {
+public func openFile(_ receiver: @escaping FileReceiver) {
     DispatchQueue.main.async {
         let panel = NSOpenPanel()
         panel.nameFieldLabel = "Choose a Swift source file to view"
@@ -65,7 +65,7 @@ func openFile(_ receiver: @escaping FileReceiver) {
     }
 }
 
-func selectDirectory(
+public func selectDirectory(
     _ config: ((NSOpenPanel) -> Void)? = nil,
     _ receiver: @escaping DirectoryReceiver
 ) {
@@ -94,7 +94,7 @@ func selectDirectory(
 }
 
 
-func openDirectory(_ receiver: @escaping DirectoryReceiver) {
+public func openDirectory(_ receiver: @escaping DirectoryReceiver) {
     DispatchQueue.main.async {
         let panel = NSOpenPanel()
         panel.nameFieldLabel = "Choose a directory to load all .swift files"
@@ -124,11 +124,11 @@ func openDirectory(_ receiver: @escaping DirectoryReceiver) {
     }
 }
 #elseif os(iOS)
-func openFile(_ receiver: @escaping FileReceiver) {
+public func openFile(_ receiver: @escaping FileReceiver) {
     print("Open file not implemented", #file)
 }
 
-func openDirectory(_ receiver: @escaping DirectoryReceiver) {
+public func openDirectory(_ receiver: @escaping DirectoryReceiver) {
     print("Open directory not implemented", #file)
 }
 #endif

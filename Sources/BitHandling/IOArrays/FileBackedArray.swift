@@ -12,18 +12,22 @@ import Foundation
 
 typealias CharType = UInt8
 
-struct FileUUIDArray: RandomAccessCollection {
+public struct FileUUIDArray: RandomAccessCollection {
     let source: FileBlockStringArray
     
-    var startIndex: Int { source.startIndex }
-    var endIndex: Int { source.endIndex }
+    public var startIndex: Int { source.startIndex }
+    public var endIndex: Int { source.endIndex }
     
-    subscript(position: Int) -> UUID? {
+    init(source: FileBlockStringArray) {
+        self.source = source
+    }
+    
+    public subscript(position: Int) -> UUID? {
         return UUID(uuidString: source[position])
     }
 }
 
-extension FileUUIDArray {
+public extension FileUUIDArray {
     private static let UUID_LENGTH = 36
     
     static func from(fileURL: URL) throws -> FileUUIDArray {
@@ -36,16 +40,16 @@ extension FileUUIDArray {
 // MARK: - String file array
 
 
-struct FileBlockStringArray: RandomAccessCollection {
+public struct FileBlockStringArray: RandomAccessCollection {
     var base: MappedElementPointer<CharType>
     let lineLength: Int
     
-    var startIndex: Int { 0 }
-    var endIndex: Int { base.backingPointer.count / lineLength }
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { base.backingPointer.count / lineLength }
     
-    var bufferPointer: UnsafeRawBufferPointer { UnsafeRawBufferPointer(base.backingPointer) }
+    public var bufferPointer: UnsafeRawBufferPointer { UnsafeRawBufferPointer(base.backingPointer) }
     
-    subscript(position: Int) -> String {
+    public subscript(position: Int) -> String {
         let start = position * lineLength
         let end = start + lineLength
         
@@ -59,12 +63,12 @@ struct FileBlockStringArray: RandomAccessCollection {
 // MARK: - Pointer container
 
 
-class MappedElementPointer<Element> {
-    enum Error: Swift.Error { case mmapError(Int32) }
+public class MappedElementPointer<Element> {
+    public enum Error: Swift.Error { case mmapError(Int32) }
     
-    let backingPointer: UnsafeBufferPointer<Element>
+    public let backingPointer: UnsafeBufferPointer<Element>
     
-    init(file: URL) throws {
+    public init(file: URL) throws {
         self.backingPointer = try Self.bufferPointer(from: file)
     }
     
