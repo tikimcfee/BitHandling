@@ -12,19 +12,24 @@
 
 import Foundation
 
-class SplittingFileReader {
-    typealias Receiver = (String, inout Bool) -> Void
+public class SplittingFileReader {
+    public typealias Receiver = (String, inout Bool) -> Void
     
     private(set) lazy var lazyLoadSplits: [String] = doSplit()
     
-    let targetURL: URL
+    public let targetURL: URL
     
-    init(targetURL: URL) {
+    public init(targetURL: URL) {
         self.targetURL = targetURL
     }
     
-    func cancellableRead(_ receiver: Receiver) {
-        doSplit(receiver: receiver)
+    public func cancellableRead(_ receiver: Receiver) {
+//        doSplit(receiver: receiver)
+        doSplitNSData(receiver: receiver)
+    }
+    
+    public func asyncLineStream() -> AsyncStream<String> {
+        doIterativeSplitNSData()
     }
 }
 
@@ -39,6 +44,30 @@ private extension SplittingFileReader {
         getDataBlock().withUnsafeBytes {
             Self.cancellableSplitBuffer($0, to: receiver)
         }
+    }
+    
+    func doSplitNSData(receiver: Receiver) {
+        do {
+//            return try Data(contentsOf: targetURL, options: .alwaysMapped)
+            let data = try NSData(contentsOf: targetURL, options: .alwaysMapped)
+            let pointer = UnsafeRawBufferPointer(start: data.bytes, count: data.count)
+            Self.cancellableSplitBuffer(pointer, to: receiver)
+        } catch {
+            print("Failed to read \(targetURL) for autosplit, returning empty data")
+        }
+    }
+    
+    func doIterativeSplitNSData() -> AsyncStream<String> {
+        let data: NSData
+        do {
+            data = try NSData(contentsOf: targetURL, options: .alwaysMapped)
+        } catch {
+            data = NSData()
+            print("Failed to read \(targetURL) for autosplit, returning empty data")
+        }
+        
+        let pointer = UnsafeRawBufferPointer(start: data.bytes, count: data.count)
+        return Self.iterativeSplitBuffer(pointer)
     }
     
     func getDataBlock() -> Data {
@@ -62,6 +91,25 @@ private extension SplittingFileReader {
             } else {
                 stop += 1
             }
+        }
+    }
+    
+    static func iterativeSplitBuffer(_ body: UnsafeRawBufferPointer) -> AsyncStream<String> {
+        AsyncStream<String> { continuation in
+            var (start, stop) = (0, 0)
+            for pointerElement in body {
+                if pointerElement == asciiSeparator {
+                    let slice = Slice<UnsafeRawBufferPointer>(base: body, bounds: start..<stop)
+                    let decoded = decodeStringFromSlice(slice)
+                    continuation.yield(decoded)
+                    
+                    stop += 1
+                    start = stop
+                } else {
+                    stop += 1
+                }
+            }
+            continuation.finish()
         }
     }
     

@@ -11,6 +11,7 @@ import Combine
 public class FileBrowser: ObservableObject {
     @Published public var scopes: [Scope] = []
     @Published public var fileSelectionEvents: FileBrowser.Event = .noSelection
+    static public var assumeAllFilesSupported = false
     
     public init() {
         
@@ -46,7 +47,8 @@ public extension FileBrowser {
     }
     
     static func isSupportedFileType(_ path: URL) -> Bool {
-        supportedTextExtensions.contains(path.pathExtension)
+        Self.assumeAllFilesSupported
+        || supportedTextExtensions.contains(path.pathExtension)
     }
     
     static func isUnsupportedFileType(_ path: URL) -> Bool {
