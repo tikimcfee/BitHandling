@@ -147,6 +147,12 @@ public extension URL {
 }
 
 public extension URL {
+    var isSupportedFileType: Bool {
+        FileBrowser.isSupportedFileType(self)
+    }
+}
+    
+public extension URL {
     private static let _fileManager = FileManager.default
     private var fileManager: FileManager { Self._fileManager }
     
