@@ -23,10 +23,10 @@ public extension FileBrowser {
         "swift", "metal",
         "m", "mm",
         "cpp", "c", "cs", "h",
-//        "md", "txt",
+        "md", "txt",
         "py",
         "java", "kt",
-//        "html", "css", "js",
+        "html", "css", "js",
 //        "json", "xml",
         "rs"
     ]

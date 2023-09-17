@@ -7,24 +7,66 @@
 
 import Foundation
 
-class AppStatePreferences {
+public class AppStatePreferences {
     private let store = UserDefaults(suiteName: "AppStatePreferences")
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
-    static let shared = AppStatePreferences()
+    public static let shared = AppStatePreferences()
     
-    enum Key: String {
+    public enum Key: RawRepresentable {
+        public typealias RawValue = String
+        
+        case panelStates
+        case panelSections
+        
         case lastScope
         case securedScopeData
+        case custom(name: String)
+        
+        public init?(rawValue: String) {
+            switch rawValue {
+            case "panelStates": self = .panelStates
+            case "panelSections": self = .panelSections
+            case "lastScope": self = .lastScope
+            case "securedScopeData": self = .securedScopeData
+            default: self = .custom(name: rawValue)
+            }
+        }
+        
+        public var rawValue: String {
+            switch self {
+            case .lastScope: return "lastScope"
+            case .panelStates: return "panelStates"
+            case .panelSections: return "panelSections"
+            case .securedScopeData: return "securedScopeData"
+            case .custom(let x): return x
+            }
+        }
     }
     
-    var securedScopeData: PeristedSecureScope? {
+    public var securedScopeData: PeristedSecureScope? {
         get { getPersistedSecureScope() }
         set { setPersistedSecureScope(newValue) }
     }
+    
+    public func getCustom<T: Codable>(name: String, makeDefault: () -> T) -> T {
+        let key = Key.custom(name: name)
+        if let state: T = _getEncoded(key) {
+            return state
+        }
+        let state = makeDefault()
+        _setEncoded(state, key)
+        return state
+    }
+    
+    public func setCustom<T: Codable>(name: String, value: T) {
+        let key = Key.custom(name: name)
+        _setEncoded(value, key)
+    }
 }
 
-typealias PeristedSecureScope = (FileBrowser.Scope, Data)
+public typealias PeristedSecureScope = (FileBrowser.Scope, Data)
+
 private extension AppStatePreferences {
     func getPersistedSecureScope() -> PeristedSecureScope? {
         guard let scope: FileBrowser.Scope = _getEncoded(.lastScope),
@@ -39,7 +81,7 @@ private extension AppStatePreferences {
     }
 }
 
-private extension AppStatePreferences {
+public extension AppStatePreferences {
     func _setEncoded<T: Codable>(_ any: T?, _ key: Key) {
         print(">>Updating Encoded preference '\(key)'")
         store?.set(try? encoder.encode(any), forKey: key.rawValue)
