@@ -160,6 +160,10 @@ public extension URL {
     var isDirectoryFile: Bool { isFileURL }
     var fileName: String { lastPathComponent }
     
+    func isSiblingOf(_ otherURL: URL) -> Bool {
+        deletingLastPathComponent() == otherURL.deletingLastPathComponent()
+    }
+    
     func children(recursive: Bool = false) -> [URL] {
         if recursive {
             return enumeratedChildren()
@@ -206,6 +210,6 @@ public extension URL {
             }
             result.append(url)
         }
-        return result
+        return result.sorted(by: { $0.path.compare($1.path) == .orderedAscending  })
     }
 }
