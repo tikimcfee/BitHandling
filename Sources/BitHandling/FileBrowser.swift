@@ -19,14 +19,14 @@ public class FileBrowser: ObservableObject {
 }
 
 public extension FileBrowser {
-    static let supportedTextExtensions: Set<String> = [
+    static var supportedTextExtensions: Set<String> = [
         "swift", "metal",
         "m", "mm",
         "cpp", "c", "cs", "h",
         "md", "txt",
         "py",
         "java", "kt",
-        "html", "css", "js",
+        "html", "css", "js", "ts", "tsx", "jsx", "scss",
 //        "json", "xml",
         "rs"
     ]
@@ -47,7 +47,8 @@ public extension FileBrowser {
     }
     
     static func isSupportedFileType(_ path: URL) -> Bool {
-        Self.assumeAllFilesSupported
+        !path.isDirectory
+        && Self.assumeAllFilesSupported
         || supportedTextExtensions.contains(path.pathExtension)
     }
     
