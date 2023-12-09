@@ -135,3 +135,19 @@ extension AppFiles {
         file(named: "default-cherriei-view", in: sceneOutputDirectory)
     }
 }
+
+// MARK: -- Glyphees
+
+extension AppFiles {
+    public static var glyphSceneDirectory: URL {
+        directory(named: "glyphees")
+    }
+    
+    public static var atlasSerializationURL: URL {
+        file(named: "default-atlas-serialization", in: glyphSceneDirectory)
+    }
+    
+    public static var atlasTextureURL: URL {
+        file(named: "default-atlas-texture", in: glyphSceneDirectory)
+    }
+}

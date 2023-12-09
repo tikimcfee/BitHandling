@@ -27,8 +27,9 @@ public extension FileBrowser {
         "py",
         "java", "kt",
         "html", "css", "js", "ts", "tsx", "jsx", "scss",
-//        "json", "xml",
-        "rs"
+        "json", "xml",
+        "rs",
+        "go"
     ]
     
     static let unsupportedExtensions: Set<String> = [
@@ -48,8 +49,10 @@ public extension FileBrowser {
     
     static func isSupportedFileType(_ path: URL) -> Bool {
         !path.isDirectory
-        && Self.assumeAllFilesSupported
-        || supportedTextExtensions.contains(path.pathExtension)
+        && (
+            Self.assumeAllFilesSupported
+            || supportedTextExtensions.contains(path.pathExtension)
+        )
     }
     
     static func isUnsupportedFileType(_ path: URL) -> Bool {
@@ -158,7 +161,6 @@ public extension URL {
     private var fileManager: FileManager { Self._fileManager }
     
     var isDirectory: Bool { hasDirectoryPath }
-    var isDirectoryFile: Bool { isFileURL }
     var fileName: String { lastPathComponent }
     
     func isSiblingOf(_ otherURL: URL) -> Bool {
