@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(Zip)
 import Zip
+#endif
 
 // MARK: - File Operations
 public struct AppFiles {
@@ -57,10 +59,12 @@ public struct AppFiles {
         }
     }
     
+    #if canImport(Zip)
     public static func unzip(fileUrl: URL, to targetUrl: URL) throws {
         Zip.addCustomFileExtension("tmp")
         try Zip.unzipFile(fileUrl, destination: targetUrl, overwrite: true, password: nil)
     }
+    #endif
 }
 
 // MARK: -- Rewrites

@@ -58,6 +58,7 @@ public extension GitHubClient {
 }
 
 public extension GitHubClient {
+    #if canImport(Zip)
     private func fetch(endpoint: Endpoint) {
         switch endpoint {
         case let .repositoryZip(repositoryZipArgs, receiver):
@@ -93,4 +94,5 @@ public extension GitHubClient {
             unzippedRepoReceiver
         ))
     }
+    #endif
 }
