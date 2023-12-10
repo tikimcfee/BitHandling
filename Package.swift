@@ -18,7 +18,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections.git", exact: .init(1, 0, 4)),
         .package(url: "https://github.com/marmelroy/Zip.git", from: "2.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-parsing.git", from: "0.13.0"), // Include case-paths... hmm..
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,7 +25,6 @@ let package = Package(
         .target(
             name: "BitHandling",
             dependencies: [
-                .product(name: "Parsing", package: "swift-parsing"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Zip", package: "Zip"),
             ]
