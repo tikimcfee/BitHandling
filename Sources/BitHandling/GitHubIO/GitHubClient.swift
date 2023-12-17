@@ -8,8 +8,7 @@
 import Foundation
 
 public class GitHubClient {
-//    public static let shared = GitHubClient()
-    
+
     static let basePath = "https://api.github.com/"
     static let baseURL = URL(string: basePath)!
     private let session: URLSession
