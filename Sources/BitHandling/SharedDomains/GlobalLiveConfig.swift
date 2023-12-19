@@ -48,9 +48,13 @@ public struct GlobalLiveConfig {
 }
 
 public struct TreeSitterColor {
+    public var rawString            = NSUIColor(displayP3Red: 0.6, green: 0.5, blue: 0.4, alpha: 1.0)
+    public var rawBool              = NSUIColor(displayP3Red: 0.9, green: 0.8, blue: 0.7, alpha: 1.0)
+    public var rawNumber            = NSUIColor(displayP3Red: 0.8, green: 0.9, blue: 0.9, alpha: 1.0)
     public var comment              = NSUIColor(displayP3Red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
     public var conditionalGuard     = NSUIColor(displayP3Red: 0.7, green: 0.2, blue: 0.6, alpha: 1.0)
     public var initConstructor      = NSUIColor(displayP3Red: 0.7, green: 0.5, blue: 0.6, alpha: 1.0)
+    
     
     public var variableDeclaration     = NSUIColor(displayP3Red: 1.0, green: 0.5, blue: 0.5, alpha: 1.0)
     public var extensionDeclaration    = NSUIColor(displayP3Red: 0.4, green: 0.6, blue: 0.6, alpha: 1.0)
