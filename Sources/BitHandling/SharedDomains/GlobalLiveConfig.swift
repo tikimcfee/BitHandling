@@ -63,6 +63,7 @@ public struct TreeSitterColor {
     public var protocolDeclaration     = NSUIColor(displayP3Red: 1.0, green: 0.8, blue: 0.9, alpha: 1.0)
     public var typeAliasDeclaration    = NSUIColor(displayP3Red: 1.0, green: 0.6, blue: 0.8, alpha: 1.0)
     public var enumDeclaration         = NSUIColor(displayP3Red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+    public var returnToken             = NSUIColor(displayP3Red: 0.5, green: 1.0, blue: 0.5, alpha: 1.0)
     
     public var unknownToken = NSUIColor(displayP3Red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
 }
