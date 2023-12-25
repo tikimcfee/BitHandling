@@ -12,10 +12,35 @@ import SwiftUI
 public typealias NSUIColor = UIColor
 #endif
 
-// Finally, a bone.
-public struct GlobalLiveConfig {
-    public static var Default = GlobalLiveConfig()
+public extension GlobalLiveConfig {
+    static var Default = load()
     
+    static func saveDefault() {
+        do {
+            let data = try JSONEncoder().encode(Default)
+            try data.write(to: AppFiles.globalConfigURL)
+        } catch {
+            print(error)
+        }
+    }
+    
+    static func reloadDefault() {
+        Default = load()
+    }
+    
+    private static func load() -> GlobalLiveConfig {
+        do {
+            let data = try Data(contentsOf: AppFiles.globalConfigURL)
+            return try JSONDecoder().decode(GlobalLiveConfig.self, from: data)
+        } catch {
+            print(error)
+            return GlobalLiveConfig()
+        }
+    }
+}
+
+// Finally, a bone.
+public struct GlobalLiveConfig: Codable {
     // MARK: - Rendering
     public var cameraNearZ: Float = 0.1
     public var cameraFarZ: Float = 5000
@@ -47,27 +72,25 @@ public struct GlobalLiveConfig {
     }
 }
 
-public struct TreeSitterColor {
-    public var rawString            = NSUIColor(displayP3Red: 0.6, green: 0.5, blue: 0.4, alpha: 1.0)
-    public var rawBool              = NSUIColor(displayP3Red: 0.9, green: 0.8, blue: 0.7, alpha: 1.0)
-    public var rawNumber            = NSUIColor(displayP3Red: 0.8, green: 0.9, blue: 0.9, alpha: 1.0)
-    public var comment              = NSUIColor(displayP3Red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
-    public var conditionalGuard     = NSUIColor(displayP3Red: 0.7, green: 0.2, blue: 0.6, alpha: 1.0)
-    public var initConstructor      = NSUIColor(displayP3Red: 0.7, green: 0.5, blue: 0.6, alpha: 1.0)
-    
-    
-    public var variableDeclaration     = NSUIColor(displayP3Red: 1.0, green: 0.5, blue: 0.5, alpha: 1.0)
-    public var extensionDeclaration    = NSUIColor(displayP3Red: 0.4, green: 0.6, blue: 0.6, alpha: 1.0)
-    public var classDeclaration        = NSUIColor(displayP3Red: 0.5, green: 0.5, blue: 0.7, alpha: 1.0)
-    public var structDeclaration       = NSUIColor(displayP3Red: 0.8, green: 0.2, blue: 0.2, alpha: 1.0)
-    public var functionDeclaration     = NSUIColor(displayP3Red: 0.123, green: 0.34, blue: 0.45, alpha: 1.0)
-    public var token                   = NSUIColor(displayP3Red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)
-    public var functionCallExpression  = NSUIColor(displayP3Red: 0.4, green: 0.4, blue: 0.9, alpha: 1.0)
-    public var memeberAccessExpression = NSUIColor(displayP3Red: 0.8, green: 0.7, blue: 0.9, alpha: 1.0)
-    public var protocolDeclaration     = NSUIColor(displayP3Red: 1.0, green: 0.8, blue: 0.9, alpha: 1.0)
-    public var typeAliasDeclaration    = NSUIColor(displayP3Red: 1.0, green: 0.6, blue: 0.8, alpha: 1.0)
-    public var enumDeclaration         = NSUIColor(displayP3Red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-    public var returnToken             = NSUIColor(displayP3Red: 0.5, green: 1.0, blue: 0.5, alpha: 1.0)
-    
-    public var unknownToken = NSUIColor(displayP3Red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+public struct TreeSitterColor: Codable {
+    public var rawString               = SerialColor(red: 0.6, green: 0.5, blue: 0.4, alpha: 1.0)
+    public var rawBool                 = SerialColor(red: 0.9, green: 0.8, blue: 0.7, alpha: 1.0)
+    public var rawNumber               = SerialColor(red: 0.8, green: 0.9, blue: 0.9, alpha: 1.0)
+    public var comment                 = SerialColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
+    public var conditionalGuard        = SerialColor(red: 0.7, green: 0.2, blue: 0.6, alpha: 1.0)
+    public var initConstructor         = SerialColor(red: 0.7, green: 0.5, blue: 0.6, alpha: 1.0)
+    public var variableDeclaration     = SerialColor(red: 1.0, green: 0.5, blue: 0.5, alpha: 1.0)
+    public var extensionDeclaration    = SerialColor(red: 0.4, green: 0.6, blue: 0.6, alpha: 1.0)
+    public var classDeclaration        = SerialColor(red: 0.5, green: 0.5, blue: 0.7, alpha: 1.0)
+    public var structDeclaration       = SerialColor(red: 0.8, green: 0.2, blue: 0.2, alpha: 1.0)
+    public var functionDeclaration     = SerialColor(red: 0.123, green: 0.34, blue: 0.45, alpha: 1.0)
+    public var token                   = SerialColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)
+    public var functionCallExpression  = SerialColor(red: 0.4, green: 0.4, blue: 0.9, alpha: 1.0)
+    public var memeberAccessExpression = SerialColor(red: 0.8, green: 0.7, blue: 0.9, alpha: 1.0)
+    public var protocolDeclaration     = SerialColor(red: 1.0, green: 0.8, blue: 0.9, alpha: 1.0)
+    public var typeAliasDeclaration    = SerialColor(red: 1.0, green: 0.6, blue: 0.8, alpha: 1.0)
+    public var enumDeclaration         = SerialColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+    public var returnToken             = SerialColor(red: 0.5, green: 1.0, blue: 0.5, alpha: 1.0)
+
+    public var unknownToken            = SerialColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
 }

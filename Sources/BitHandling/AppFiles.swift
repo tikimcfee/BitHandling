@@ -154,4 +154,8 @@ extension AppFiles {
     public static var atlasTextureURL: URL {
         file(named: "default-atlas-texture", in: glyphSceneDirectory)
     }
+
+    public static var globalConfigURL: URL {
+        file(named: "global-configuration", in: glyphSceneDirectory)
+    }
 }

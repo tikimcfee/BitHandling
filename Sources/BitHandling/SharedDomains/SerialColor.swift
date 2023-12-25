@@ -33,7 +33,7 @@ public struct SerialColor: Codable, Hashable, Equatable {
     }
 }
 
-public extension NSUIColor {
+public extension NSUIColor {    
     var serializable: SerialColor {
         guard let data = rgba else { return .white }
         return SerialColor(
