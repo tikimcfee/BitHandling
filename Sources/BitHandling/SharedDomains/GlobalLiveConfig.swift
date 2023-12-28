@@ -66,10 +66,50 @@ public struct GlobalLiveConfig: Codable {
     
     // MARK: - Syntax
     public var coloring: TreeSitterColor = TreeSitterColor()
+    public var keymap: Keymap = Keymap()
     
     internal init() {
         
     }
+}
+
+public struct Keymap: Codable {
+    public static let movement: [String: SelfRelativeDirection] = [
+        "a": .left,
+        "A": .left,
+        "d": .right,
+        "D": .right,
+        "w": .forward,
+        "W": .forward,
+        "s": .backward,
+        "S": .backward,
+        "z": .down,
+        "Z": .down,
+        "x": .up,
+        "X": .up,
+        "q": .yawLeft,
+        "Q": .yawLeft,
+        "e": .yawRight,
+        "E": .yawRight,
+    ]
+    
+    public static let focus: [String: SelfRelativeDirection] = [
+        "h": .left,
+        "H": .left,
+        "l": .right,
+        "L": .right,
+        "j": .down,
+        "J": .down,
+        "k": .up,
+        "K": .up,
+        "n": .forward,
+        "N": .forward,
+        "m": .backward,
+        "M": .backward,
+    ]
+    
+    public var movement = Self.movement
+    public var focus = Self.focus
 }
 
 public struct TreeSitterColor: Codable {
