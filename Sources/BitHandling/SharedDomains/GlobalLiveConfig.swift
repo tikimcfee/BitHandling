@@ -42,8 +42,8 @@ public extension GlobalLiveConfig {
 // Finally, a bone.
 public struct GlobalLiveConfig: Codable {
     // MARK: - Rendering
-    public var cameraNearZ: Float = 0.1
-    public var cameraFarZ: Float = 5000
+    public var cameraNearZ: Float = 2.0
+    public var cameraFarZ: Float = 5000.0
     
     // MARK: - Controls
     public var uiAnimationDuration: Double = 1.0 / 8.0
