@@ -42,6 +42,7 @@ public extension GlobalLiveConfig {
 // Finally, a bone.
 public struct GlobalLiveConfig: Codable {
     // MARK: - Rendering
+    public var cameraFieldOfView: Float = Float.pi / 3.0
     public var cameraNearZ: Float = 2.0
     public var cameraFarZ: Float = 5000.0
     
