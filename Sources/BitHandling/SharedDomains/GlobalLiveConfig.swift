@@ -44,7 +44,7 @@ public struct GlobalLiveConfig: Codable {
     // MARK: - Rendering
     public var cameraFieldOfView: Float = Float.pi / 3.0
     public var cameraNearZ: Float = 2.0
-    public var cameraFarZ: Float = 5000.0
+    public var cameraFarZ: Float = 64_000.0
     
     // MARK: - Controls
     public var uiAnimationDuration: Double = 1.0 / 8.0
