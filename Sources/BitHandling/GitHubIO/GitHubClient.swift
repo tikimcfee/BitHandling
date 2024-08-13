@@ -9,6 +9,7 @@ import Foundation
 
 public class GitHubClient {
 
+//    static let basePath = "https://api.github.com/"
     static let basePath = "https://api.github.com/"
     static let baseURL = URL(string: basePath)!
     private let session: URLSession
@@ -24,7 +25,7 @@ public extension GitHubClient {
     #if canImport(Zip)
     func fetch(
         endpoint: Endpoint
-    ) -> URLSessionDownloadTask {
+    ) -> URLSessionTask {
         switch endpoint {
         case .repositoryZip(_):
             let task = session.downloadTask(with: endpoint.apiUrl)
@@ -37,7 +38,7 @@ public extension GitHubClient {
         repositoryName: String,
         branchName: String,
         _ unzippedRepoReceiver: @escaping (Result<URL, Error>) -> Void
-    ) -> URLSessionDownloadTask {
+    ) -> URLSessionTask {
         let repoFileDownloadTarget = AppFiles.githubRepositoriesRoot
             .appendingPathComponent(repositoryName, isDirectory: true)
         
