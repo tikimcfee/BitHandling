@@ -47,6 +47,17 @@ public struct AppFiles {
         try fileManager.moveItem(at: fileUrl, to: targetUrl)
     }
     
+    public static func replace(fileUrl: URL, with newUrl: URL) throws {
+        print("Replacing:\n\t\(fileUrl)\n\t\(newUrl)")
+        try fileManager.replaceItem(
+            at: fileUrl,
+            withItemAt: newUrl,
+            backupItemName: "\(newUrl.fileName).bak",
+            options: [.withoutDeletingBackupItem],
+            resultingItemURL: nil
+        )
+    }
+    
     public static func delete(fileUrl: URL) {
         guard fileManager.isDeletableFile(atPath: fileUrl.path) else {
             print("Not deletable: \(fileUrl)")
