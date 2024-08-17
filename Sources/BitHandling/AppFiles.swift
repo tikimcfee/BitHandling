@@ -52,7 +52,7 @@ public struct AppFiles {
         try fileManager.replaceItem(
             at: fileUrl,
             withItemAt: newUrl,
-            backupItemName: "\(newUrl.fileName).bak",
+            backupItemName: "\(fileUrl.fileName).bak",
             options: [.withoutDeletingBackupItem],
             resultingItemURL: nil
         )
