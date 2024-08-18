@@ -48,7 +48,7 @@ public struct AppFiles {
     }
     
     public static func replace(fileUrl: URL, with newUrl: URL) throws {
-        print("Replacing:\n\t\(fileUrl)\n\t\(newUrl)")
+        print("Replacing:\n\t dst: \(fileUrl)\n\t src: \(newUrl)")
         try fileManager.replaceItem(
             at: fileUrl,
             withItemAt: newUrl,
