@@ -14,8 +14,7 @@ import Foundation
 
 public class SplittingFileReader {
     public typealias Receiver = (String, inout Bool) -> Void
-    
-    private(set) lazy var lazyLoadSplits: [String] = doSplit()
+    public typealias LineBreakReceiver = (Range<Int>, inout Bool) -> Void
     
     public let targetURL: URL
     
@@ -23,20 +22,12 @@ public class SplittingFileReader {
         self.targetURL = targetURL
     }
     
-    public func cancellableRead(_ receiver: Receiver) {
-        doSplitNSData(receiver: receiver)
-    }
-    
     public func asyncLineStream() -> AsyncStream<String> {
         doIterativeSplitNSData()
     }
-    
-    public func indexingAsyncLineStream() -> AsyncStream<(String, Int)> {
-        doIterativeSplitNSDataIndexed()
-    }
 }
 
-private extension SplittingFileReader {
+public extension SplittingFileReader {
     static private let asciiSeparator = UInt8(ascii: "\n")
     
     func doSplitNSData(receiver: Receiver) {
@@ -45,6 +36,17 @@ private extension SplittingFileReader {
             let data = try NSData(contentsOf: targetURL, options: .alwaysMapped)
             let pointer = UnsafeRawBufferPointer(start: data.bytes, count: data.count)
             Self.cancellableSplitBuffer(pointer, to: receiver)
+        } catch {
+            print("Failed to read \(targetURL) for autosplit, returning empty data")
+        }
+    }
+    
+    func doSplitNSData(receiver: Receiver, lineBreaks: LineBreakReceiver) {
+        do {
+//            return try Data(contentsOf: targetURL, options: .alwaysMapped)
+            let data = try NSData(contentsOf: targetURL, options: .alwaysMapped)
+            let pointer = UnsafeRawBufferPointer(start: data.bytes, count: data.count)
+            Self.cancellableSplitBuffer(pointer, text: receiver, breaks: lineBreaks)
         } catch {
             print("Failed to read \(targetURL) for autosplit, returning empty data")
         }
@@ -175,6 +177,26 @@ private extension SplittingFileReader {
         var (start, stop, stopProcessing) = (0, 0, false)
         for pointerElement in body where !stopProcessing {
             if pointerElement == asciiSeparator {
+                let slice = Slice<UnsafeRawBufferPointer>(base: body, bounds: start..<stop)
+                let decoded = decodeStringFromSlice(slice)
+                receiver(decoded, &stopProcessing)
+                stop += 1
+                start = stop
+            } else {
+                stop += 1
+            }
+        }
+    }
+    
+    static func cancellableSplitBuffer(
+        _ body: UnsafeRawBufferPointer,
+        text receiver: Receiver,
+        breaks lineBreaks: LineBreakReceiver // TODO:
+    ) {
+        var (start, stop, stopProcessing, forceLineBreak) = (0, 0, false, false)
+        for pointerElement in body where !stopProcessing {
+            lineBreaks(start..<stop, &forceLineBreak)
+            if pointerElement == asciiSeparator || forceLineBreak {
                 let slice = Slice<UnsafeRawBufferPointer>(base: body, bounds: start..<stop)
                 let decoded = decodeStringFromSlice(slice)
                 receiver(decoded, &stopProcessing)
