@@ -13,6 +13,8 @@ public extension FileBrowser {
             case addToFocus
             case addToWorld
             case focusOnExistingGrid
+            
+            case removeFromWorld
         }
         
         case noSelection
