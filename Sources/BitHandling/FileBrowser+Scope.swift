@@ -65,6 +65,17 @@ public extension FileBrowser {
                 return path.path
             }
         }
+        
+        public var isExpandedDirectory: Bool {
+            switch self {
+            case .file:
+                false
+            case .directory:
+                false
+            case .expandedDirectory:
+                true
+            }
+        }
     }
 }
 
