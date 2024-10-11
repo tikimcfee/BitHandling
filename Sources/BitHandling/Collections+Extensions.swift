@@ -14,6 +14,7 @@ public enum ToggleResult {
 
 public protocol Toggleable {
     associatedtype Element
+    
     mutating func toggle(_ element: Element) -> ToggleResult
     
     func contains(_ element: Element) -> Bool
@@ -26,6 +27,8 @@ public protocol Toggleable {
 }
 
 extension Toggleable {
+    
+    @discardableResult
     public mutating func toggle(_ toggled: Element) -> ToggleResult {
         if contains(toggled) {
             remove(toggled)

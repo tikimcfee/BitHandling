@@ -31,6 +31,10 @@ public extension GlobalLiveConfig {
     private static func load() -> GlobalLiveConfig {
         do {
             let data = try Data(contentsOf: AppFiles.globalConfigURL)
+            guard data.count > 0 else {
+                print("- No global live config file found. Returning default.")
+                return GlobalLiveConfig()
+            }
             return try JSONDecoder().decode(GlobalLiveConfig.self, from: data)
         } catch {
             print(error)

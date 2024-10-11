@@ -8,7 +8,8 @@ import Foundation
 
 #if os(macOS)
 import AppKit
-extension NSEvent.ModifierFlags: CustomStringConvertible {
+
+extension NSEvent.ModifierFlags: @retroactive CustomStringConvertible {
     public var description: String {
         var modifiers = ""
         
@@ -56,7 +57,7 @@ extension NSEvent.ModifierFlags: CustomStringConvertible {
     }
 }
 
-extension NSEvent.EventType: CustomStringConvertible {
+extension NSEvent.EventType: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .leftMouseDown:
