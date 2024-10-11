@@ -6,7 +6,7 @@ import Foundation
 public protocol CacheBuilder {
     associatedtype Key: Hashable
     associatedtype Value
-    func make(_ key: Key, _ store: inout [Key: Value]) -> Value
+    func make(_ key: Key) -> Value
 }
 
 open class LockingCache<Key: Hashable, Value>: CacheBuilder {
@@ -17,7 +17,7 @@ open class LockingCache<Key: Hashable, Value>: CacheBuilder {
         /* Maybe accept a cache instance.. or just use an Actor <3 */
     }
 
-    open func make(_ key: Key, _ store: inout [Key: Value]) -> Value {
+    open func make(_ key: Key) -> Value {
         fatalError("LockingCache subscript defaults to `make()`; implement this in [\(type(of: self))].")
     }
 
@@ -57,8 +57,7 @@ open class LockingCache<Key: Hashable, Value>: CacheBuilder {
             return cached
         }
         
-        var diff = [Key:Value]()
-        let new = make(key, &diff)
+        let new = make(key)
         cache[key] = new
 
         return new
