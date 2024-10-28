@@ -37,7 +37,7 @@ public extension GlobalLiveConfig {
             }
             return try JSONDecoder().decode(GlobalLiveConfig.self, from: data)
         } catch {
-            print(error)
+            print("Failed to decode GlobalLiveConfig. Will return default. Error: ", error)
             return GlobalLiveConfig()
         }
     }
