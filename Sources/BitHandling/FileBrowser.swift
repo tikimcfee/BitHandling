@@ -10,7 +10,7 @@ import Combine
 
 public class FileBrowser: ObservableObject {
     @Published public var scopes: [Scope] = []
-    @Published public var fileSelectionEvents: FileBrowser.Event = .noSelection
+    @Published public var fileSelectionEvents: FileBrowserEvent?
     static public var assumeAllFilesSupported = false
     
     public init() {

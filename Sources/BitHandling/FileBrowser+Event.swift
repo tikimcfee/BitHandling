@@ -7,21 +7,21 @@
 
 import Foundation
 
-public extension FileBrowser {
-    enum Event {
-        public enum SelectType {
-            case addToFocus
-            case addToWorld
-            case focusOnExistingGrid
-            
-            case removeFromWorld
-        }
-        
-        case noSelection
-        
-        case newSingleCommand(URL, SelectType)
-        
-        case newMultiCommandRecursiveAllCache(URL)
-        case newMultiCommandRecursiveAllLayout(URL, SelectType)
+public enum SelectType {
+    case toggle
+    case addToWorld
+    case removeFromWorld
+}
+
+public struct FileBrowserEvent {
+    public let scope: FileBrowser.Scope
+    public let action: SelectType
+    
+    public init(
+        _ scope: FileBrowser.Scope,
+        _ action: SelectType
+    ) {
+        self.scope = scope
+        self.action = action
     }
 }

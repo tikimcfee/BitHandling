@@ -65,17 +65,6 @@ public extension FileBrowser {
                 return path.path
             }
         }
-        
-        public var isExpandedDirectory: Bool {
-            switch self {
-            case .file:
-                false
-            case .directory:
-                false
-            case .expandedDirectory:
-                true
-            }
-        }
     }
 }
 
@@ -161,8 +150,9 @@ public extension FileBrowser {
         }
         
         switch scopes[index] {
-        case let .file(newPathSelection):
-            fileSelectionEvents = .newSingleCommand(newPathSelection, .addToFocus)
+        case .file:
+            print("--- Ignoring file event in FileBrowser")
+            break
             
         case let .directory(path):
             scopes[index] = .expandedDirectory(path)
