@@ -29,19 +29,23 @@ public extension FileBrowser {
         "html", "css", "js", "ts", "tsx", "jsx", "scss",
         "json", "xml",
         "rs",
-        "go"
+        "go",
+        "pbxproj", "xcworkspace", "storyboard",
+        "plist", "resolved", "xcscheme"
     ]
     
     static let unsupportedExtensions: Set<String> = [
-        "xcodeproj", "xcassets", "git"
+        "xcassets", "git"
     ]
     
     // This is fragile. Both collapse/expand need to filter repeatedly.
     static func isFileObserved(_ path: URL) -> Bool {
-        (
-            path.isDirectory
-            || isSupportedFileType(path)
-        ) && !(
+//        (
+//            path.isDirectory
+//            || isSupportedFileType(path)
+//        )
+//        &&
+        !(
             path.lastPathComponent.starts(with: ".")
             || isUnsupportedFileType(path)
         )
