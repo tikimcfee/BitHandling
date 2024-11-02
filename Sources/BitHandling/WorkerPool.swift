@@ -12,12 +12,12 @@ public final class WorkerPool {
     public static let shared = WorkerPool()
     
     private lazy var serialWorker = DispatchQueue(
-        label: "LugoWorkerPool-Serial-1",
+        label: "LugoWorker-Serial-1",
         qos: .userInteractive
     )
     
     private lazy var concurrentWorker = DispatchQueue(
-        label: "LugoWorkerPool-Concurrent-1",
+        label: "LugoWorker-Concurrent-1",
         qos: .userInteractive,
         attributes: .concurrent
     )
@@ -37,28 +37,9 @@ public final class WorkerPool {
     /// is just way faster. Easily multiple seconds across, and it's likely all the contention.
     /// Now all the performance cruft is in `render` because of the `update + render` pass, which is... lame.
     /// If `update` can happen JIT, lazily, and via cache, we should be good...
-//    private lazy var workerIterator = allWorkers.makeIterator()
-//    private lazy var concurrentWorkerIterator = concurrentWorkers.makeIterator()
 //    private let workerCount = (ProcessInfo.processInfo.processorCount - 1)
-//
-//    public func nextWorker() -> DispatchQueue {
-//        return workerIterator.next() ?? {
-//            workerIterator = allWorkers.makeIterator()
-//            let next = workerIterator.next()!
-//            return next
-//        }()
-//    }
-//    
-//    public func nextConcurrentWorker() -> DispatchQueue {
-//        return concurrentWorkerIterator.next() ?? {
-//            concurrentWorkerIterator = concurrentWorkers.makeIterator()
-//            let next = concurrentWorkerIterator.next()!
-//            return next
-//        }()
-//    }
-//    
 //    private lazy var allWorkers =
-//        (0..<3).map { DispatchQueue(
+//        (0..<workerCount).map { DispatchQueue(
 //            label: "LugoWorkerPool-Serial-\($0)",
 //            qos: .userInitiated
 //        )}
@@ -69,4 +50,23 @@ public final class WorkerPool {
 //            qos: .userInitiated,
 //            attributes: .concurrent
 //        )}
+//    
+//    private lazy var workerIterator = allWorkers.makeIterator()
+//    private lazy var concurrentWorkerIterator = concurrentWorkers.makeIterator()
+//
+//    public func nextPooledWorker() -> DispatchQueue {
+//        return workerIterator.next() ?? {
+//            workerIterator = allWorkers.makeIterator()
+//            let next = workerIterator.next()!
+//            return next
+//        }()
+//    }
+//    
+//    public func nextPooledConcurrentWorker() -> DispatchQueue {
+//        return concurrentWorkerIterator.next() ?? {
+//            concurrentWorkerIterator = concurrentWorkers.makeIterator()
+//            let next = concurrentWorkerIterator.next()!
+//            return next
+//        }()
+//    }
 }
