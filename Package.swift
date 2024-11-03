@@ -17,7 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections.git", exact: .init(1, 0, 4)),
-        .package(url: "https://github.com/marmelroy/Zip.git", from: "2.0.0"),
+        .package(url: "https://github.com/marmelroy/Zip.git", branch: "master"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
