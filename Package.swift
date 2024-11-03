@@ -25,6 +25,7 @@ let package = Package(
         .target(
             name: "BitHandling",
             dependencies: [
+                .product(name: "Collections", package: "swift-collections"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Zip", package: "Zip"),
             ]
