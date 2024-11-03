@@ -6,7 +6,9 @@
 //
 
 import Foundation
+#if canImport(Zip)
 import Zip
+#endif
 
 // MARK: - File Operations
 public struct AppFiles {
@@ -45,6 +47,17 @@ public struct AppFiles {
         try fileManager.moveItem(at: fileUrl, to: targetUrl)
     }
     
+    public static func replace(fileUrl: URL, with newUrl: URL) throws {
+        print("Replacing:\n\t dst: \(fileUrl)\n\t src: \(newUrl)")
+        try fileManager.replaceItem(
+            at: fileUrl,
+            withItemAt: newUrl,
+            backupItemName: "\(fileUrl.fileName).bak",
+            options: [.withoutDeletingBackupItem],
+            resultingItemURL: nil
+        )
+    }
+    
     public static func delete(fileUrl: URL) {
         guard fileManager.isDeletableFile(atPath: fileUrl.path) else {
             print("Not deletable: \(fileUrl)")
@@ -57,10 +70,12 @@ public struct AppFiles {
         }
     }
     
+    #if canImport(Zip)
     public static func unzip(fileUrl: URL, to targetUrl: URL) throws {
         Zip.addCustomFileExtension("tmp")
         try Zip.unzipFile(fileUrl, destination: targetUrl, overwrite: true, password: nil)
     }
+    #endif
 }
 
 // MARK: -- Rewrites
@@ -133,5 +148,25 @@ extension AppFiles {
     
     public static var defaultSceneOutputFile: URL {
         file(named: "default-cherriei-view", in: sceneOutputDirectory)
+    }
+}
+
+// MARK: -- Glyphees
+
+extension AppFiles {
+    public static var glyphSceneDirectory: URL {
+        directory(named: "glyphees")
+    }
+    
+    public static var atlasSerializationURL: URL {
+        file(named: "default-atlas-serialization", in: glyphSceneDirectory)
+    }
+    
+    public static var atlasTextureURL: URL {
+        file(named: "default-atlas-texture", in: glyphSceneDirectory)
+    }
+
+    public static var globalConfigURL: URL {
+        file(named: "global-configuration", in: glyphSceneDirectory)
     }
 }

@@ -10,7 +10,7 @@ import Combine
 
 public class FileBrowser: ObservableObject {
     @Published public var scopes: [Scope] = []
-    @Published public var fileSelectionEvents: FileBrowser.Event = .noSelection
+    @Published public var fileSelectionEvents: FileBrowserEvent?
     static public var assumeAllFilesSupported = false
     
     public init() {
@@ -19,36 +19,44 @@ public class FileBrowser: ObservableObject {
 }
 
 public extension FileBrowser {
-    static let supportedTextExtensions: Set<String> = [
+    static var supportedTextExtensions: Set<String> = [
         "swift", "metal",
         "m", "mm",
         "cpp", "c", "cs", "h",
         "md", "txt",
         "py",
         "java", "kt",
-        "html", "css", "js",
-//        "json", "xml",
-        "rs"
+        "html", "css", "js", "ts", "tsx", "jsx", "scss",
+        "json", "xml",
+        "rs",
+        "go",
+        "pbxproj", "xcworkspace", "storyboard",
+        "plist", "resolved", "xcscheme"
     ]
     
     static let unsupportedExtensions: Set<String> = [
-        "xcodeproj", "xcassets", "git"
+        "xcassets", "git"
     ]
     
     // This is fragile. Both collapse/expand need to filter repeatedly.
     static func isFileObserved(_ path: URL) -> Bool {
-        (
-            path.isDirectory
-            || isSupportedFileType(path)
-        ) && !(
+//        (
+//            path.isDirectory
+//            || isSupportedFileType(path)
+//        )
+//        &&
+        !(
             path.lastPathComponent.starts(with: ".")
             || isUnsupportedFileType(path)
         )
     }
     
     static func isSupportedFileType(_ path: URL) -> Bool {
-        Self.assumeAllFilesSupported
-        || supportedTextExtensions.contains(path.pathExtension)
+        !path.isDirectory
+        && (
+            Self.assumeAllFilesSupported
+            || supportedTextExtensions.contains(path.pathExtension)
+        )
     }
     
     static func isUnsupportedFileType(_ path: URL) -> Bool {
@@ -157,7 +165,6 @@ public extension URL {
     private var fileManager: FileManager { Self._fileManager }
     
     var isDirectory: Bool { hasDirectoryPath }
-    var isDirectoryFile: Bool { isFileURL }
     var fileName: String { lastPathComponent }
     
     func isSiblingOf(_ otherURL: URL) -> Bool {

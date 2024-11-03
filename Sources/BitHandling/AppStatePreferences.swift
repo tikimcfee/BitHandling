@@ -83,7 +83,8 @@ private extension AppStatePreferences {
 
 public extension AppStatePreferences {
     func _setEncoded<T: Codable>(_ any: T?, _ key: Key) {
-        print(">>Updating Encoded preference '\(key)'")
+//        print(">>Updating Encoded preference '\(key)'")
+        
         store?.set(try? encoder.encode(any), forKey: key.rawValue)
     }
     
@@ -93,7 +94,8 @@ public extension AppStatePreferences {
     }
     
     func _setRaw<T: Codable>(_ any: T?, _ key: Key) {
-        print(">> Updating Raw preference '\(key)'")
+//        print(">> Updating Raw preference '\(key)'")
+        
         store?.set(any, forKey: key.rawValue)
     }
     

@@ -68,6 +68,27 @@ public extension FileBrowser {
     }
 }
 
+public extension FileBrowser.Scope {
+    var isFile: Bool {
+        if case .file = self { return true }
+        return false
+    }
+
+    var isDirectory: Bool {
+        if case .directory = self { return true }
+        return false
+    }
+
+    var isExpandedDirectory: Bool {
+        if case .expandedDirectory = self { return true }
+        return false
+    }
+
+    var isDirectoryType: Bool {
+        isDirectory || isExpandedDirectory
+    }
+}
+
 private extension AppStatePreferences {
     func persistAsCurrentScope(_ scope: FileBrowser.Scope) {
         do {
@@ -131,7 +152,10 @@ public extension FileBrowser {
         }
     }
     
-    func onScopeSelected(_ scope: Scope) {
+    func onScopeSelected(
+        _ scope: Scope,
+        recursive: Bool = false
+    ) {
         /* This is a bit gross in terms of side effects, but the idea is that it toggles or selects.
          
          When a 'Scope' (a file) is selected, it has a direct UI interaction associated. If selecting a file scope,
@@ -150,24 +174,39 @@ public extension FileBrowser {
         }
         
         switch scopes[index] {
-        case let .file(newPathSelection):
-            fileSelectionEvents = .newSingleCommand(newPathSelection, .addToFocus)
+        case .file:
+            print("--- Ignoring file event in FileBrowser")
+            break
+            
         case let .directory(path):
             scopes[index] = .expandedDirectory(path)
-            expandCollapsedDirectory(rootIndex: index, path)
+            expandCollapsedDirectory(rootIndex: index, recursive: recursive, path)
+            
         case let .expandedDirectory(path):
             scopes[index] = .directory(path)
             collapseExpandedDirectory(rootIndex: index, path)
         }
     }
     
-    private func expandCollapsedDirectory(rootIndex: Array.Index, _ path: URL) {
-        let subpaths = path.filterdChildren(Self.isFileObserved)
-        let expandedChildren = subpaths
-            .reduce(into: [Scope]()) { result, path in
-                result.append(Scope.from(path))
-            }
-        scopes.insert(contentsOf: expandedChildren, at: rootIndex + 1)
+    private func expandCollapsedDirectory(
+        rootIndex: Array.Index,
+        recursive: Bool = false,
+        _ path: URL
+    ) {
+        let childScopes = path
+            .filterdChildren(Self.isFileObserved)
+            .map { Scope.from($0) }
+
+        scopes.insert(
+            contentsOf: childScopes,
+            at: rootIndex + 1
+        )
+        
+        if recursive {
+            childScopes
+                .filter(\.isDirectoryType)
+                .forEach { onScopeSelected($0, recursive: true)}
+        }
     }
     
     private func collapseExpandedDirectory(rootIndex: Array.Index, _ path: URL) {

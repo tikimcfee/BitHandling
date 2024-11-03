@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,8 +6,8 @@ import PackageDescription
 let package = Package(
     name: "BitHandling",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12),
+        .iOS(.v17),
+        .macOS(.v14),
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -26,7 +26,7 @@ let package = Package(
             name: "BitHandling",
             dependencies: [
                 .product(name: "OrderedCollections", package: "swift-collections"),
-                .product(name: "Zip", package: "Zip")
+                .product(name: "Zip", package: "Zip"),
             ]
         ),
         .testTarget(

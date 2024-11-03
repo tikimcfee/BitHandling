@@ -8,12 +8,52 @@
 import Foundation
 
 public class GitHubClient {
-    public static let shared = GitHubClient()
-    
+
+//    static let basePath = "https://api.github.com/"
     static let basePath = "https://api.github.com/"
     static let baseURL = URL(string: basePath)!
+    private let session: URLSession
     
-    private init() { }
+    public init(
+        session: URLSession
+    ) {
+        self.session = session
+    }
+}
+
+public extension GitHubClient {
+    #if canImport(Zip)
+    func fetch(
+        endpoint: Endpoint
+    ) -> URLSessionTask {
+        switch endpoint {
+        case .repositoryZip(_):
+            let task = session.downloadTask(with: endpoint.apiUrl)
+            return task
+        }
+    }
+    
+    func downloadAndUnzipRepository(
+        owner: String,
+        repositoryName: String,
+        branchName: String,
+        _ unzippedRepoReceiver: @escaping (Result<URL, Error>) -> Void
+    ) -> URLSessionTask {
+        let repoFileDownloadTarget = AppFiles.githubRepositoriesRoot
+            .appendingPathComponent(repositoryName, isDirectory: true)
+        
+        let task = fetch(endpoint: .repositoryZip(
+            RepositoryZipArgs(
+                owner: owner,
+                repo: repositoryName,
+                branchRef: branchName,
+                unzippedResultTargetUrl: repoFileDownloadTarget
+            )
+        ))
+        task.resume()
+        return task
+    }
+    #endif
 }
 
 public extension GitHubClient {
@@ -42,11 +82,11 @@ public extension GitHubClient {
     }
     
     enum Endpoint {
-        case repositoryZip(RepositoryZipArgs, (Result<URL, Error>) -> Void)
+        case repositoryZip(RepositoryZipArgs)
         
         public var apiPath: String {
             switch self {
-            case let .repositoryZip(args, _):
+            case let .repositoryZip(args):
                 return "repos/\(args.owner)/\(args.repo)/zipball/\(args.branchRef)"
             }
         }
@@ -54,43 +94,5 @@ public extension GitHubClient {
         public var apiUrl: URL {
             GitHubClient.baseURL.appendingPathComponent(apiPath)
         }
-    }
-}
-
-public extension GitHubClient {
-    private func fetch(endpoint: Endpoint) {
-        switch endpoint {
-        case let .repositoryZip(repositoryZipArgs, receiver):
-            URLSession.shared.downloadTask(with: endpoint.apiUrl) { url, response, error in
-                do {
-                    guard let savedUrl = url else { throw ClientError.missingResultURL }
-                    try AppFiles.unzip(fileUrl: savedUrl, to: repositoryZipArgs.unzippedResultTargetUrl)
-                    receiver(.success(repositoryZipArgs.unzippedResultTargetUrl))
-                } catch {
-                    print("Failed during file io: \(error)")
-                    receiver(.failure(error))
-                }
-            }.resume()
-        }
-    }
-    
-    func downloadAndUnzipRepository(
-        owner: String,
-        repositoryName: String,
-        branchName: String,
-        _ unzippedRepoReceiver: @escaping (Result<URL, Error>) -> Void
-    ) {
-        let repoFileDownloadTarget = AppFiles.githubRepositoriesRoot
-            .appendingPathComponent(repositoryName, isDirectory: true)
-        
-        fetch(endpoint: .repositoryZip(
-            RepositoryZipArgs(
-                owner: owner,
-                repo: repositoryName,
-                branchRef: branchName,
-                unzippedResultTargetUrl: repoFileDownloadTarget
-            ),
-            unzippedRepoReceiver
-        ))
     }
 }

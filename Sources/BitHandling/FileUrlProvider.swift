@@ -17,14 +17,14 @@ public extension DirectoryResult {
         return nil
     }
     var children: [URL]? {
-        if case let .success(url) = self { return url.swiftUrls }
+        if case let .success(url) = self { return url.fileUrls }
         return nil
     }
 }
 
 public struct Directory {
     let parent: URL
-    let swiftUrls: [URL]
+    let fileUrls: [URL]
 }
 
 public enum FileError: Error {
@@ -86,7 +86,7 @@ public func selectDirectory(
             receiver(.success(
                 Directory(
                     parent: directoryUrl,
-                    swiftUrls: [] // lame. Should just be a URL or.. something else.
+                    fileUrls: []
                 ))
             )
         }
@@ -97,7 +97,7 @@ public func selectDirectory(
 public func openDirectory(_ receiver: @escaping DirectoryReceiver) {
     DispatchQueue.main.async {
         let panel = NSOpenPanel()
-        panel.nameFieldLabel = "Choose a directory to load all .swift files"
+        panel.nameFieldLabel = "Choose a directory to open"
         panel.canChooseFiles = false
         panel.canChooseDirectories = true
         panel.canHide = true
@@ -108,16 +108,16 @@ public func openDirectory(_ receiver: @escaping DirectoryReceiver) {
                 return
             }
 
-            let swiftFiles = try? FileManager.default.contentsOfDirectory(
+            let fileURLs = try? FileManager.default.contentsOfDirectory(
                 at: directoryUrl,
                 includingPropertiesForKeys: nil,
-                options: .skipsSubdirectoryDescendants
-            ).filter({ $0.pathExtension == "swift" })
+                options: [.skipsSubdirectoryDescendants]
+            )
 
             receiver(.success(
                 Directory(
                     parent: directoryUrl,
-                    swiftUrls: swiftFiles ?? []
+                    fileUrls: fileURLs ?? []
                 ))
             )
         }
