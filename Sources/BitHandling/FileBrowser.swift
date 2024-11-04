@@ -30,6 +30,7 @@ public extension FileBrowser {
         "json", "xml",
         "rs",
         "go",
+        "sh",
         "pbxproj", "xcworkspace", "storyboard",
         "plist", "resolved", "xcscheme"
     ]
