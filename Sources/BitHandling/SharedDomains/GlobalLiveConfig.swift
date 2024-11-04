@@ -70,6 +70,7 @@ public struct GlobalLiveConfig: Codable {
     public var magnificationRawMultiplier: Float = 100_000
     
     // MARK: - Syntax
+    public var colorizeOnOpen: Bool = false
     public var coloring: TreeSitterColor = TreeSitterColor()
     public var keymap: Keymap = Keymap()
     
