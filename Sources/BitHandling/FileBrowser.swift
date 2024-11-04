@@ -56,6 +56,7 @@ public extension FileBrowser {
         && (
             Self.assumeAllFilesSupported
             || supportedTextExtensions.contains(path.pathExtension)
+            || path.pathExtension.isEmpty
         )
     }
     
