@@ -69,6 +69,9 @@ public struct GlobalLiveConfig: Codable {
     
     public var magnificationRawMultiplier: Float = 100_000
     
+    // MARK: - Gride
+    public var maxInstancesPerGrid: Int = 100_000
+    
     // MARK: - Syntax
     public var colorizeOnOpen: Bool = false
     public var coloring: TreeSitterColor = TreeSitterColor()
