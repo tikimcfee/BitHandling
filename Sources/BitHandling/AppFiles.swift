@@ -58,6 +58,24 @@ public struct AppFiles {
         )
     }
     
+    public static func oneTimeBackupOf(fileUrl: URL, with newUrl: URL) throws {
+        if fileManager.fileExists(
+            atPath: fileUrl.appendingPathExtension("bak").path()
+        ) {
+            print("Already backup up:\n\t dst: \(fileUrl)")
+            return
+        }
+        
+        print("Backup:\n\t dst: \(fileUrl)\n\t src: \(newUrl)")
+        try fileManager.replaceItem(
+            at: fileUrl,
+            withItemAt: newUrl,
+            backupItemName: "\(fileUrl.fileName).bak",
+            options: [.withoutDeletingBackupItem],
+            resultingItemURL: nil
+        )
+    }
+    
     public static func delete(fileUrl: URL) {
         guard fileManager.isDeletableFile(atPath: fileUrl.path) else {
             print("Not deletable: \(fileUrl)")
