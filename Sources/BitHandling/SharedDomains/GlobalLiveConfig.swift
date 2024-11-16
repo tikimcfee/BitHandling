@@ -69,13 +69,41 @@ public struct GlobalLiveConfig: Codable {
     
     public var magnificationRawMultiplier: Float = 100_000
     
-    // MARK: - Gride
-    public var maxInstancesPerGrid: Int = 100_000
+    // MARK: - Grid compute
+    public var maxInstancesPerGrid: Int = 100_000 // Compute this for chipset combo? (cpu/gpu/memory)
+    
+    
+    // MARK: - Grid layout
+    public var codeGridGroupPadding: Float = 32.0
+    public var codeGridGroupMaxRowWidth: Float = 5000.0
+    public var codeGridGroupDepthPading: Float = -128.0
     
     // MARK: - Syntax
     public var colorizeOnOpen: Bool = false
     public var coloring: TreeSitterColor = TreeSitterColor()
     public var keymap: Keymap = Keymap()
+    
+    static var supportAllFiles: Bool = true
+    
+    static var supportedFileExtensions: Set<String> = [
+        "swift", "metal",
+        "m", "mm",
+        "cpp", "c", "cs", "h",
+        "md", "txt",
+        "py",
+        "java", "kt",
+        "html", "css", "js", "ts", "tsx", "jsx", "scss",
+        "json", "xml",
+        "rs",
+        "go",
+        "sh",
+        "pbxproj", "xcworkspace", "storyboard",
+        "plist", "resolved", "xcscheme"
+    ]
+    
+    static var unsupportedExtensions: Set<String> = [
+        "xcassets", "git"
+    ]
     
     internal init() {
         

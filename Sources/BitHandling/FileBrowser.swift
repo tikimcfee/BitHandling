@@ -11,7 +11,6 @@ import Combine
 public class FileBrowser: ObservableObject {
     @Published public var scopes: [Scope] = []
     @Published public var fileSelectionEvents: FileBrowserEvent?
-    static public var assumeAllFilesSupported = false
     
     public init() {
         
@@ -19,25 +18,17 @@ public class FileBrowser: ObservableObject {
 }
 
 public extension FileBrowser {
-    static var supportedTextExtensions: Set<String> = [
-        "swift", "metal",
-        "m", "mm",
-        "cpp", "c", "cs", "h",
-        "md", "txt",
-        "py",
-        "java", "kt",
-        "html", "css", "js", "ts", "tsx", "jsx", "scss",
-        "json", "xml",
-        "rs",
-        "go",
-        "sh",
-        "pbxproj", "xcworkspace", "storyboard",
-        "plist", "resolved", "xcscheme"
-    ]
+    static var assumeAllFilesSupported: Bool {
+        GlobalLiveConfig.supportAllFiles
+    }
     
-    static let unsupportedExtensions: Set<String> = [
-        "xcassets", "git"
-    ]
+    static var supportedTextExtensions: Set<String> {
+        GlobalLiveConfig.supportedFileExtensions
+    }
+    
+    static var unsupportedExtensions: Set<String> {
+        GlobalLiveConfig.unsupportedExtensions
+    }
     
     // This is fragile. Both collapse/expand need to filter repeatedly.
     static func isFileObserved(_ path: URL) -> Bool {
