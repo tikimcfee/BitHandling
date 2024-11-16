@@ -157,7 +157,16 @@ public extension URL {
     private static let _fileManager = FileManager.default
     private var fileManager: FileManager { Self._fileManager }
     
-    var isDirectory: Bool { hasDirectoryPath }
+    var isDirectory: Bool {
+        if hasDirectoryPath { return true }
+        let flags = try? resourceValues(forKeys: [.isDirectoryKey, .isPackageKey])
+        return flags?.isDirectory ?? flags?.isPackage ?? false
+    }
+    
+    var isRegularFile: Bool {
+        (try? resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true
+    }
+    
     var fileName: String { lastPathComponent }
     
     func isSiblingOf(_ otherURL: URL) -> Bool {
@@ -171,7 +180,11 @@ public extension URL {
             do {
                 let found = try fileManager.contentsOfDirectory(
                     at: self,
-                    includingPropertiesForKeys: nil,
+                    includingPropertiesForKeys: [
+                        .isDirectoryKey,
+                        .isPackageKey,
+//                        .isVolumeKey
+                    ],
                     options: [.skipsHiddenFiles]
                 )
                 return found
@@ -192,7 +205,11 @@ public extension URL {
         guard let enumerator = fileManager
             .enumerator(
                 at: self,
-                includingPropertiesForKeys: [],
+                includingPropertiesForKeys: [
+                    .isDirectoryKey,
+                    .isPackageKey,
+//                    .isVolumeKey
+                ],
                 options: [.skipsHiddenFiles],
                 errorHandler: { print($1, $0); return false }
             )
@@ -203,9 +220,12 @@ public extension URL {
         
         var result = [URL]()
         while let url = enumerator.nextObject() as? URL {
+            let url = url.resolvingSymlinksInPath()
             let isReadableFile = FileBrowser.isFileObserved(url)
             if !isReadableFile {
-                if url.isDirectory { enumerator.skipDescendants() }
+                if url.isDirectory {
+                    enumerator.skipDescendants()
+                }
                 continue
             }
             result.append(url)
