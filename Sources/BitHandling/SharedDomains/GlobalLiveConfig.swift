@@ -12,37 +12,6 @@ import SwiftUI
 public typealias NSUIColor = UIColor
 #endif
 
-public extension GlobalLiveConfig {
-    static var Default = load()
-    
-    static func saveDefault() {
-        do {
-            let data = try JSONEncoder().encode(Default)
-            try data.write(to: AppFiles.globalConfigURL)
-        } catch {
-            print(error)
-        }
-    }
-    
-    static func reloadDefault() {
-        Default = load()
-    }
-    
-    private static func load() -> GlobalLiveConfig {
-        do {
-            let data = try Data(contentsOf: AppFiles.globalConfigURL)
-            guard data.count > 0 else {
-                print("- No global live config file found. Returning default.")
-                return GlobalLiveConfig()
-            }
-            return try JSONDecoder().decode(GlobalLiveConfig.self, from: data)
-        } catch {
-            print("Failed to decode GlobalLiveConfig. Will return default. Error: ", error)
-            return GlobalLiveConfig()
-        }
-    }
-}
-
 // Finally, a bone.
 public struct GlobalLiveConfig: Codable {
     // MARK: - Rendering
@@ -79,7 +48,7 @@ public struct GlobalLiveConfig: Codable {
     public var codeGridGroupDepthPading: Float = -128.0
     
     // MARK: - Syntax
-    public var colorizeOnOpen: Bool = false
+    public var colorizeOnOpen: Bool = true
     public var coloring: TreeSitterColor = TreeSitterColor()
     public var keymap: Keymap = Keymap()
     
@@ -105,7 +74,7 @@ public struct GlobalLiveConfig: Codable {
         "xcassets", "git"
     ]
     
-    internal init() {
+    public init() {
         
     }
 }
@@ -226,4 +195,14 @@ public struct TreeSitterColor: Codable {
     public var varableBuiltin                   = SerialColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)    // Yellow for built-in variables
     public var variableSelfExpression           = SerialColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)    // Yellow for self variable expressions
     public var variablePattern                  = SerialColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 1.0)    // Yellow for variable patterns
+}
+
+
+// Save it
+extension GlobalLiveConfig: FlatFilePreference {
+    public static var store = FlatFilePreferenceStore(GlobalLiveConfig())
+    
+    public var persistencePath: URL {
+        AppFiles.globalConfigURL
+    }
 }
