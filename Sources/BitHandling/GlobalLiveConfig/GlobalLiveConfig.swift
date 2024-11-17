@@ -20,7 +20,7 @@ public struct GlobalLiveConfig: Codable {
     public var cameraFarZ: Float = 64_000.0
     
     // MARK: - Controls
-    public var uiAnimationDuration: Double = 1.0 / 8.0
+    public var uiAnimationDuration: Float = 1.0 / 8.0
 
     public var movementSpeed: Float = 50.0
     public var movementSpeedModified: Float = 1000.0
@@ -52,9 +52,9 @@ public struct GlobalLiveConfig: Codable {
     public var coloring: TreeSitterColor = TreeSitterColor()
     public var keymap: Keymap = Keymap()
     
-    static var supportAllFiles: Bool = true
+    public var supportAllFiles: Bool = true
     
-    static var supportedFileExtensions: Set<String> = [
+    public var supportedFileExtensions: Set<String> = [
         "swift", "metal",
         "m", "mm",
         "cpp", "c", "cs", "h",

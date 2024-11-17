@@ -19,11 +19,11 @@ public class FileBrowser: ObservableObject {
 
 public extension FileBrowser {
     static var assumeAllFilesSupported: Bool {
-        GlobalLiveConfig.supportAllFiles
+        GlobalLiveConfig.store.preference.supportAllFiles
     }
     
     static var supportedTextExtensions: Set<String> {
-        GlobalLiveConfig.supportedFileExtensions
+        GlobalLiveConfig.store.preference.supportedFileExtensions
     }
     
     static var unsupportedExtensions: Set<String> {

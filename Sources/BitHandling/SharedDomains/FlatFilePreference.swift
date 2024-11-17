@@ -17,6 +17,7 @@ public protocol FlatFilePreference: Codable {
 public extension FlatFilePreference {
     func saveToFile() {
         do {
+            print("- Saving \(Self.self). Target: \(persistencePath)")
             let data = try JSONEncoder().encode(self)
             try data.write(to: persistencePath)
         } catch {
@@ -27,6 +28,7 @@ public extension FlatFilePreference {
     
     mutating func loadFromFile() {
         do {
+            print("- Loading \(Self.self). Target: \(persistencePath)")
             let data = try Data(contentsOf: persistencePath)
             guard data.count > 0 else {
                 print("- No file found \(Self.self). Not resetting: \(persistencePath)")
@@ -40,8 +42,8 @@ public extension FlatFilePreference {
     }
 }
 
-public struct FlatFilePreferenceStore<T: FlatFilePreference> {
-    public var preference: T {
+public class FlatFilePreferenceStore<T: FlatFilePreference>: ObservableObject {
+    @Published public var preference: T {
         didSet {
             preference.saveToFile()
         }
