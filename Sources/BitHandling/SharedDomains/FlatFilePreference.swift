@@ -7,7 +7,6 @@
 
 
 import Foundation
-import AppKit
 import SwiftUI
 
 public protocol FlatFilePreference: Codable {
