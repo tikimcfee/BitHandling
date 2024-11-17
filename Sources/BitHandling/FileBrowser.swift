@@ -26,30 +26,30 @@ public extension FileBrowser {
         GlobalLiveConfig.store.preference.supportedFileExtensions
     }
     
+    static var supportedColorizedExtensions: Set<String> {
+        GlobalLiveConfig.store.preference.supportedColorizedExtensions
+    }
+    
     static var unsupportedExtensions: Set<String> {
         GlobalLiveConfig.unsupportedExtensions
     }
     
     // This is fragile. Both collapse/expand need to filter repeatedly.
     static func isFileObserved(_ path: URL) -> Bool {
-//        (
-//            path.isDirectory
-//            || isSupportedFileType(path)
-//        )
-//        &&
-        !(
-            path.lastPathComponent.starts(with: ".")
-            || isUnsupportedFileType(path)
-        )
+        !path.lastPathComponent.starts(with: ".")
+        && !isUnsupportedFileType(path)
+    }
+    
+    static func isSupportedColorizedFileType(_ path: URL) -> Bool {
+        Self.assumeAllFilesSupported
+        || !path.isDirectory
+        && supportedColorizedExtensions.contains(path.pathExtension)
     }
     
     static func isSupportedFileType(_ path: URL) -> Bool {
-        !path.isDirectory
-        && (
-            Self.assumeAllFilesSupported
-            || supportedTextExtensions.contains(path.pathExtension)
-//            || path.pathExtension.isEmpty
-        )
+        Self.assumeAllFilesSupported
+        || !path.isDirectory
+        && supportedTextExtensions.contains(path.pathExtension)
     }
     
     static func isUnsupportedFileType(_ path: URL) -> Bool {
@@ -150,6 +150,10 @@ public extension URL {
 public extension URL {
     var isSupportedFileType: Bool {
         FileBrowser.isSupportedFileType(self)
+    }
+    
+    var isColorizedFileType: Bool {
+        FileBrowser.isSupportedColorizedFileType(self)
     }
 }
     
