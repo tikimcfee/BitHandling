@@ -40,7 +40,7 @@ public struct GlobalLiveConfig: Codable {
     
     // MARK: - Grid compute
     public var maxInstancesPerGrid: Int = 100_000 // Compute this for chipset combo? (cpu/gpu/memory)
-    public var maxFileSizePerGridMegabytes: Float = 2.0 // Compute this for chipset combo? (cpu/gpu/memory)
+    public var maxFileSizePerGridMegabytes: Float = 1.0 // Compute this for chipset combo? (cpu/gpu/memory)
     
     
     // MARK: - Grid layout
