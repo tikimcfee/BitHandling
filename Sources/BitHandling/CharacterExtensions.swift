@@ -8,7 +8,7 @@
 import Foundation
 
 public class HashCache: LockingCache<Character, UInt64> {
-    var reversed: [Value: Key] = [:]
+    var reversed: ConcurrentDictionary<Value, Key> = .init()
     
     public override func make(_ key: Key) -> Value {
         let prime: UInt64 = 31;
